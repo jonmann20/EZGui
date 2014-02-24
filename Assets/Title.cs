@@ -24,7 +24,8 @@ public class Title : MonoBehaviour {
     void OnGUI(){
         EZGUI.init();
 
-        EZGUI.placeTxtWShadow("Game Title", 80, EZGUI.HALFW, 200, Color.yellow, Color.black);
+        EZGUI.placeTxtWShadow("EZGUI", 80, EZGUI.HALFW, 200, Color.yellow, Color.black);
+        EZGUI.placeTxt("by Jon Wiedmann", 25, EZGUI.HALFW, 250);
 
         switch(state){
             case State.START:
@@ -48,7 +49,7 @@ public class Title : MonoBehaviour {
 
                 break;
             case State.INSTRUCTIONS:
-                if(EZGUI.placeBtn("Back", 55, 80, 80, Color.white, Color.green)) {
+                if(EZGUI.pulseBtnWShadow("Back", 55, 80, 80, Color.white, Color.green, Color.black)) {
                     state = State.SELECT;
                 }
 

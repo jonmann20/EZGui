@@ -57,7 +57,7 @@ public class EZGUI : MonoBehaviour {
         GUI.Label(g.rect, g.cnt, g.style);
     }
 
-    public static void placeTxtWShadow(string str, int fontSize, float x, float y, Color color, Color dropShadow) {
+    public static void placeTxtWShadow(string str, int fontSize, float x, float y, Color color, Color dropShadow){
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
 
         g.style.normal.textColor = dropShadow;
@@ -67,7 +67,7 @@ public class EZGUI : MonoBehaviour {
         GUI.Label(g.rect, g.cnt, g.style);
     }
 
-    public static void blinkTxt(string str, int fontSize, float x, float y, Color? color=null) {
+    public static void blinkTxt(string str, int fontSize, float x, float y, Color? color=null){
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
 
         Color c = g.style.normal.textColor;
@@ -81,7 +81,7 @@ public class EZGUI : MonoBehaviour {
     #endregion GUI.Label
 
     #region GUI.Button
-    public static bool placeBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null) {
+    public static bool placeBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null){
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
 
         if(hoverColor != null) {
@@ -137,6 +137,34 @@ public class EZGUI : MonoBehaviour {
             }
         }
 
+        return GUI.Button(g.rect, g.cnt, g.style);
+    }
+
+    public static bool pulseBtnWShadow(string str, int fontSize, float x, float y, Color color, Color hoverColor, Color dropShadow) {
+        // pulse
+        float pp = Mathf.PingPong(Time.time, 0.9f);
+        pp *= 10;
+        fontSize += (int)pp;
+
+        GUIObject g = getGUIObject(str, fontSize, x, y, color);
+
+        // drop shadow
+        g.style.normal.textColor = dropShadow;
+        GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+
+        g.style.normal.textColor = color;
+
+        // hover color
+        if(hoverColor != null){
+            Vector2 mousePos = GUIUtility.ScreenToGUIPoint(Input.mousePosition);
+            mousePos.y = FULLH - mousePos.y;
+
+            if(g.rect.Contains(mousePos)){
+                g.style.normal.textColor = (Color)hoverColor;
+            }
+        }
+
+        // button
         return GUI.Button(g.rect, g.cnt, g.style);
     }
 
