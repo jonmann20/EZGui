@@ -3,13 +3,9 @@ using System.Collections;
 
 public class Main : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    void OnGUI(){
+        EZGUI.init();
+
+        EZGUI.blinkTxt("Alert!!", 55, EZGUI.HALFW, EZGUI.HALFH, Color.red);
+    }
 }
