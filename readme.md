@@ -22,22 +22,18 @@ API
 	* MUST be called at the start of OnGUI().
 
 * GUI.Label
-	* placeTxt(str, fontSize, x, y, ?color)
+	* placeTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
 		* Draw's str at (x, y).
-	* flashTxt(str, fontSize, x, y, ?color)
+	* flashTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
 		* Turns str on and of over time at (x, y).
-	* blinkTxt(str, fontSize, x, y, ?color)
+	* blinkTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
 		* Same as flash, but with crossfade.
-	* pulseTxt(str, fontSize, x, y, ?color)
+	* pulseTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
 		* Scales str's size in and out over time at (x, y).
 
 * GUI.Button
-	* placeBtn(str, fontSize, x, y, ?color, ?hoverColor)
-	* flashBtn(str, fontSize, x, y, ?color, ?hoverColor)
-	* blinkBtn(str, fontSize, x, y, ?color, ?hoverColor)
-	* pulseBtn(str, fontSize, x, y, ?color, ?hoverColor)
-
-NOTE: all method are available in the form:
-* fooWShadow(..., ?dropShadowColor)
-	* Adds a drop shadow to the text.
+	* placeBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
+	* flashBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
+	* blinkBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
+	* pulseBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
 

@@ -24,18 +24,18 @@ public class Title : MonoBehaviour {
     void OnGUI(){
         EZGUI.init();
 
-        EZGUI.placeTxtWShadow("EZGUI", 80, EZGUI.HALFW, 200, Color.yellow, Color.black);
+        EZGUI.placeTxt("EZGUI", 80, EZGUI.HALFW, 200, Color.yellow, Color.black);
         EZGUI.placeTxt("by Jon Wiedmann", 25, EZGUI.HALFW, 250);
 
         switch(state){
             case State.START:
-                if(EZGUI.flashBtn("Press Start", 55, EZGUI.HALFW, EZGUI.HALFH, Color.white, Color.red)){
+                if(EZGUI.flashBtn("Press Start", 55, EZGUI.HALFW, EZGUI.HALFH, Color.white, new Color(0.8f, 0.8f, 0.8f), Color.black)){
                     state = State.SELECT;
                 }
 
                 break;
             case State.SELECT:
-                if(EZGUI.placeBtn("Campaign", 55, EZGUI.HALFW, EZGUI.HALFH - 100, Color.white, Color.magenta)) {
+                if(EZGUI.placeBtn("Campaign", 55, EZGUI.HALFW, EZGUI.HALFH - 100, Color.white, Color.magenta, new Color(0.1f, 0.1f, 0.1f))) {
                     Application.LoadLevel("main");
                 }
 
@@ -49,14 +49,13 @@ public class Title : MonoBehaviour {
 
                 break;
             case State.INSTRUCTIONS:
-                if(EZGUI.pulseBtnWShadow("Back", 55, 80, 80, Color.white, Color.green, Color.black)) {
+                if(EZGUI.pulseBtn("Back", 55, 80, 80, Color.white, Color.green, Color.black)){
                     state = State.SELECT;
                 }
 
                 EZGUI.placeTxt("The Instructions here", 55, EZGUI.HALFW, EZGUI.HALFH);
 
                 break;
-
         }
     }
 }

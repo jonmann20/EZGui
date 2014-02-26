@@ -51,38 +51,79 @@ public class EZGUI : MonoBehaviour {
 
     #region GUI.Label
 
-    public static void placeTxt(string str, int fontSize, float x, float y, Color? color=null){
+    public static void placeTxt(string str, int fontSize, float x, float y, Color? color=null, Color? dropShadow=null){
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
+
+		if(dropShadow != null){
+			g.style.normal.textColor = (Color)dropShadow;
+			GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+			g.style.normal.textColor = (Color)color;
+		}
 
         GUI.Label(g.rect, g.cnt, g.style);
     }
 
-    public static void placeTxtWShadow(string str, int fontSize, float x, float y, Color color, Color dropShadow){
-        GUIObject g = getGUIObject(str, fontSize, x, y, color);
-
-        g.style.normal.textColor = dropShadow;
-        GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
-
-        g.style.normal.textColor = color;
-        GUI.Label(g.rect, g.cnt, g.style);
-    }
-
-    public static void blinkTxt(string str, int fontSize, float x, float y, Color? color=null){
+	public static void blinkTxt(string str, int fontSize, float x, float y, Color? color=null, Color? dropShadow=null){
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
 
         Color c = g.style.normal.textColor;
         c.a = Mathf.PingPong(Time.time, 1);
 
+		if(dropShadow != null){
+			Color dc = (Color)dropShadow;
+			dc.a = c.a;
+			g.style.normal.textColor = dc;
+			GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+		}
         g.style.normal.textColor = c;
 
         GUI.Label(g.rect, g.cnt, g.style);
     }
 
+	public static void flashTxt(string str, int fontSize, float x, float y, Color? color=null, Color? dropShadow=null){
+		GUIObject g = getGUIObject(str, fontSize, x, y, color);
+		
+		Color c = g.style.normal.textColor;
+		c.a = (Time.time % 2 < 1) ? 1 : 0;
+		
+		if(dropShadow != null && c.a == 1){
+			g.style.normal.textColor = (Color)dropShadow;
+			GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+		}
+		g.style.normal.textColor = c;
+		
+		GUI.Label(g.rect, g.cnt, g.style);
+	}
+
+	public static void pulseTxt(string str, int fontSize, float x, float y, Color? color=null, Color? dropShadow=null){
+		// pulse
+		float pp = Mathf.PingPong(Time.time, 0.9f);
+		pp *= 10;
+		fontSize += (int)pp;
+		
+		GUIObject g = getGUIObject(str, fontSize, x, y, color);
+
+		if(dropShadow != null){
+			g.style.normal.textColor = (Color)dropShadow;
+			GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+			g.style.normal.textColor = (Color)color;
+		}
+
+		GUI.Label(g.rect, g.cnt, g.style);
+	}
+
     #endregion GUI.Label
 
     #region GUI.Button
-    public static bool placeBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null){
+
+    public static bool placeBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null, Color? dropShadow=null){
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
+
+		if(dropShadow != null){
+			g.style.normal.textColor = (Color)dropShadow;
+			GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+			g.style.normal.textColor = (Color)color;
+		}
 
         if(hoverColor != null) {
             Vector2 mousePos = GUIUtility.ScreenToGUIPoint(Input.mousePosition);
@@ -96,13 +137,19 @@ public class EZGUI : MonoBehaviour {
         return GUI.Button(g.rect, g.cnt, g.style);
     }
 
-    public static bool blinkBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null) {
+    public static bool blinkBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null, Color? dropShadow=null) {
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
 
         Color c = g.style.normal.textColor;
         c.a = Mathf.PingPong(Time.time, 1);
         
-        g.style.normal.textColor = c;
+		if(dropShadow != null){
+			Color dc = (Color)dropShadow;
+			dc.a = c.a;
+			g.style.normal.textColor = dc;
+			GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+		}
+		g.style.normal.textColor = c;
 
         if(hoverColor != null) {
             Vector2 mousePos = GUIUtility.ScreenToGUIPoint(Input.mousePosition);
@@ -118,13 +165,17 @@ public class EZGUI : MonoBehaviour {
         return GUI.Button(g.rect, g.cnt, g.style);
     }
 
-    public static bool flashBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null) {
+    public static bool flashBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null, Color? dropShadow=null) {
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
 
         Color c = g.style.normal.textColor;
-        c.a = (Time.time % 2 < 1) ? 1 : 0; ;
+        c.a = (Time.time % 2 < 1) ? 1 : 0;
 
-        g.style.normal.textColor = c;
+		if(dropShadow != null && c.a == 1){
+			g.style.normal.textColor = (Color)dropShadow;
+			GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+		}
+		g.style.normal.textColor = c;
 
         if(hoverColor != null) {
             Vector2 mousePos = GUIUtility.ScreenToGUIPoint(Input.mousePosition);
@@ -140,7 +191,7 @@ public class EZGUI : MonoBehaviour {
         return GUI.Button(g.rect, g.cnt, g.style);
     }
 
-    public static bool pulseBtnWShadow(string str, int fontSize, float x, float y, Color color, Color hoverColor, Color dropShadow) {
+    public static bool pulseBtn(string str, int fontSize, float x, float y, Color color, Color hoverColor, Color? dropShadow=null) {
         // pulse
         float pp = Mathf.PingPong(Time.time, 0.9f);
         pp *= 10;
@@ -149,10 +200,12 @@ public class EZGUI : MonoBehaviour {
         GUIObject g = getGUIObject(str, fontSize, x, y, color);
 
         // drop shadow
-        g.style.normal.textColor = dropShadow;
-        GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
-
-        g.style.normal.textColor = color;
+		if(dropShadow != null){
+        	g.style.normal.textColor = (Color)dropShadow;
+        	GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+			g.style.normal.textColor = (Color)color;
+		}
+        
 
         // hover color
         if(hoverColor != null){
