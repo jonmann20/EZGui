@@ -3,59 +3,50 @@ using System.Collections;
 
 public class Title : MonoBehaviour {
 
-    enum State {START, SELECT, INSTRUCTIONS};
-    State state = State.START;
+    delegate void State();
+    State state;
 
-    int slot = 0;
-
-    void Update(){
-        if(state == State.SELECT){
-            float vert = Input.GetAxisRaw("Vertical");
-
-            if(vert > 0){           // up
-
-            }
-            else if(vert < 0){      // down
-
-            }
-        }
+    void Awake(){
+        state = start;
     }
 
     void OnGUI(){
         EZGUI.init();
 
-        EZGUI.placeTxt("EZGUI", 80, EZGUI.HALFW, 200, Color.yellow, Color.black);
+        EZGUI.placeTxt("EZGUI", 80, EZGUI.HALFW, 200, Color.yellow, new Color(0.1f, 0.1f, 0.1f));
         EZGUI.placeTxt("by Jon Wiedmann", 25, EZGUI.HALFW, 250);
 
-        switch(state){
-            case State.START:
-                if(EZGUI.flashBtn("Press Start", 55, EZGUI.HALFW, EZGUI.HALFH, Color.white, new Color(0.8f, 0.8f, 0.8f), Color.black)){
-                    state = State.SELECT;
-                }
+        state();
+    }
 
-                break;
-            case State.SELECT:
-                if(EZGUI.placeBtn("Campaign", 55, EZGUI.HALFW, EZGUI.HALFH - 100, Color.white, Color.magenta, new Color(0.1f, 0.1f, 0.1f))) {
-                    Application.LoadLevel("main");
-                }
-
-                if(EZGUI.placeBtn("Instructions", 55, EZGUI.HALFW, EZGUI.HALFH, Color.white, Color.cyan)) {
-                    state = State.INSTRUCTIONS;
-                }
-
-                if(EZGUI.placeBtn("Back", 55, EZGUI.HALFW, EZGUI.HALFH + 100, Color.white, Color.red)){
-                    state = State.START;
-                }
-
-                break;
-            case State.INSTRUCTIONS:
-                if(EZGUI.pulseBtn("Back", 55, 80, 80, Color.white, Color.green, Color.black)){
-                    state = State.SELECT;
-                }
-
-                EZGUI.placeTxt("The Instructions here", 55, EZGUI.HALFW, EZGUI.HALFH);
-
-                break;
+    void start(){
+        if(EZGUI.flashBtn("Press Start", 55, EZGUI.HALFW, EZGUI.HALFH, Color.white, new Color(0.8f, 0.8f, 0.8f), new Color(0.1f, 0.1f, 0.1f)) || Input.GetKeyDown(KeyCode.Return)) {
+            state = select;
         }
+    }
+
+    void select(){
+        if(EZGUI.placeBtn("Campaign", 55, EZGUI.HALFW, EZGUI.HALFH - 100, Color.white, Color.green, new Color(0.1f, 0.1f, 0.1f))) {
+            Application.LoadLevel("main");
+        }
+
+        if(EZGUI.placeBtn("Instructions", 55, EZGUI.HALFW, EZGUI.HALFH, Color.white, Color.green, new Color(0.1f, 0.1f, 0.1f))) {
+            state = instructions;
+        }
+
+        if(EZGUI.placeBtn("Back", 55, EZGUI.HALFW, EZGUI.HALFH + 100, Color.white, Color.red, new Color(0.1f, 0.1f, 0.1f)) || Input.GetKeyDown(KeyCode.Backspace)) {
+            state = start;
+        }
+    }
+
+    void instructions(){
+        if(EZGUI.pulseBtn("Back", 52, 85, 85, Color.white, Color.red, new Color(0.1f, 0.1f, 0.1f)) || Input.GetKeyDown(KeyCode.Backspace)) {
+            state = select;
+        }
+
+        EZGUI.leftJustify = true;
+
+        EZGUI.placeTxt("Pressing Back will activate the \"Back\" button.", 42, 50, EZGUI.HALFH - 100);
+        EZGUI.placeTxt("Pressing Enter will activate the will activate the \"Press Start\" button.", 42, 50, EZGUI.HALFH);
     }
 }

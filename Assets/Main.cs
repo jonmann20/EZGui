@@ -6,16 +6,23 @@ public class Main : MonoBehaviour {
     void OnGUI(){
         EZGUI.init();
 
-		EZGUI.placeTxt("GUI.Label", 55, 200, 100, Color.green, Color.black);
-		EZGUI.placeTxt("Place Text", 55, 200, 200, Color.green, Color.black);
-		EZGUI.flashTxt("Flash Text", 55, 200, 300, Color.green, Color.black);
-		EZGUI.blinkTxt("Blink Text", 55, 200, 400, Color.green, Color.black);
-		EZGUI.pulseTxt("Pulse Text", 55, 200, 500, Color.green, Color.black);
+        if(EZGUI.placeBtn("Back", 45, 85, 85, Color.white, Color.red, Color.black) || Input.GetKeyDown(KeyCode.Backspace)){
+            Application.LoadLevel("title");
+        }
 
-		EZGUI.placeTxt("GUI.Button", 55, 600, 100, Color.red, Color.black);
-		EZGUI.placeBtn("Place Button", 55, 600, 200, Color.red, Color.yellow);
-		EZGUI.flashBtn("Flash Button", 55, 600, 300, Color.red, Color.yellow);
-		EZGUI.blinkBtn("Blink Button", 55, 600, 400, Color.red, Color.yellow);
-		EZGUI.pulseBtn("Pulse Button", 55, 600, 500, Color.red, Color.yellow);
+        int fSize = 43;
+
+        EZGUI.placeTxt("GUI.Label", fSize, 300, 100, Color.green, Color.black);
+        EZGUI.placeTxt("Place Text", fSize, 300, 200, Color.green, Color.black);
+        EZGUI.flashTxt("Flash Text", fSize, 300, 300, Color.green, Color.black);
+        EZGUI.blinkTxt("Blink Text", fSize, 300, 400, Color.green, Color.black);
+        EZGUI.pulseTxt("Pulse Text", fSize, 300, 500, Color.green, Color.black);
+        EZGUI.wrapTxt("Wrapping Text over a certain width will fall to the next line automatically", fSize, 300, 500, 200, Color.green, Color.black);
+
+        EZGUI.placeTxt("GUI.Button", fSize, 700, 100, Color.red, Color.black);
+        EZGUI.placeBtn("Place Button", fSize, 700, 200, Color.red, Color.yellow);
+        EZGUI.flashBtn("Flash Button", fSize, 700, 300, Color.red, Color.yellow);
+        EZGUI.blinkBtn("Blink Button", fSize, 700, 400, Color.red, Color.yellow);
+        EZGUI.pulseBtn("Pulse Button", fSize, 700, 500, Color.red, Color.yellow);
     }
 }

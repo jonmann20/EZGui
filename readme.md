@@ -1,37 +1,44 @@
 EZGui
 =====
 
-EZGui is a class for easily laying out text with Unity's OnGUI() function.
+EZGui is a class for easily laying out text with Unity's OnGUI() function.  It is well suited for text call-to-actions, and simple notification animations.
 
 Live Demo
 ---------
 * [Try Demo](http://jonmann20.github.io/playground/EZGui/)
-* Be sure to resize your browser window to see the scaling happen.
+* Resize your browser window to see the scaling happen.
 
 Setup
 -----
 1. Add this file anywhere in the Assets folder (does NOT need to be attached to a game object in the heirarchy)
-2. Setup a target resolution, and layout your GUI relative to this.
-3. Make a call to EZGui.init() at the start of your OnGUI() function.
-4. Use EZGui.FULLW instead of Screen.width, etc...
-5. Let EZGui handle the aspect ratio and resolution math for you.
+2. Setup a target resolution, and layout your GUI relative to this, using FULLW instead of Screen.width etc...
+3. Make a call to init() at the start of your OnGUI() function.
 
 API
 ---
+* FULLW
+* FULLH
+* HALFW
+* HALFH
+* leftJustify
+	* Set this to true to left justify text.
+	
 * init()
+	* Scales GUI.matrix relative to FULLW and FULLH.
+	* Resets leftJustify to false.
 	* MUST be called at the start of OnGUI().
 
-* GUI.Label
+* GUI.Label methods
 	* placeTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
-		* Draw's str at (x, y).
+		* Draws str with center at (x, y).
 	* flashTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
-		* Turns str on and of over time at (x, y).
+		* Turns str on and off.
 	* blinkTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
-		* Same as flash, but with crossfade.
+		* Fades str in and out.
 	* pulseTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
-		* Scales str's size in and out over time at (x, y).
+		* Scales str's fontSize [0, 9].
 
-* GUI.Button
+* GUI.Button methods
 	* placeBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
 	* flashBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
 	* blinkBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
