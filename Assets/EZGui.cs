@@ -124,6 +124,7 @@ public class EZGUI : MonoBehaviour {
 
         Color c = g.style.normal.textColor;
         c.a = Mathf.PingPong(Time.time, 1);
+        g.style.normal.textColor = c;
 
         addDropShadow(g, dropShadow);
 
