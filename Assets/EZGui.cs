@@ -14,6 +14,40 @@ using System.Collections;
     2) Make a call to init() at the start of your OnGUI() function.
 */
 
+public struct EZOpt {
+    public string str;
+    public int fontSize;
+    public float x, y;
+    
+    public Color? color, hover, active, drop;
+    public bool bold, italic, leftJustify;
+    public int dropShadowX, dropShadowY, width;
+
+
+    public EZOpt(
+        string str, int fontSize, float x, float y, 
+        Color? color=null, Color? hoverColor=null, Color? activeColor=null, Color? dropShadow=null, 
+        bool bold=false, bool italic=false, bool leftJustify=false,
+        int dropShadowX=5, int dropShadowY=5, int width=0
+    ){
+        this.str = str;
+        this.fontSize = fontSize;
+        this.x = x;
+        this.y = y;
+
+        this.color = color ?? Color.white;
+        this.hover = hoverColor;
+        this.active = activeColor;
+        this.drop = dropShadow;
+        this.bold = bold;
+        this.italic = italic;
+        this.leftJustify = leftJustify;
+        this.dropShadowX = dropShadowX;
+        this.dropShadowY = dropShadowY;
+        this.width = width;
+    }
+};
+
 public class EZGUI : MonoBehaviour {
 
     public const float FULLW = 1920;
@@ -21,8 +55,6 @@ public class EZGUI : MonoBehaviour {
 
     public const float HALFW = FULLW / 2;
     public const float HALFH = FULLH / 2;
-
-    public static bool leftJustify = false;
 
     struct GUIObject {
         public GUIContent cnt;
@@ -32,7 +64,7 @@ public class EZGUI : MonoBehaviour {
     }
 
     /// <summary>
-    /// Scales GUI.matrix relative to FULLW and FULLH.  Resets leftJustify to false.  
+    /// Scales GUI.matrix relative to FULLW and FULLH.  
     /// Must be called at the start of OnGUI()!
     /// </summary>
     public static void init(){
@@ -40,30 +72,38 @@ public class EZGUI : MonoBehaviour {
         float ry = Screen.height / FULLH;
 
         GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(rx, ry, 1));
-        
-        leftJustify = false;
     }
 
-    static GUIObject getGUIObject(string str, int fontSize, float x, float y, Color? color){
+    static GUIObject getGUIObject(EZOpt e){
         GUIObject gObj = new GUIObject();
 
-        gObj.cnt = new GUIContent(str);
+        gObj.cnt = new GUIContent(e.str);
 
         gObj.style = new GUIStyle();
-        gObj.style.fontSize = fontSize;
-        gObj.style.normal.textColor = color ?? Color.white;
+        gObj.style.fontSize = e.fontSize;
+        gObj.style.normal.textColor = e.color ?? Color.white;
 
         gObj.size = gObj.style.CalcSize(gObj.cnt);
-        gObj.rect = new Rect(x - gObj.size.x/2, y - gObj.size.y, gObj.size.x, gObj.size.y);
+        gObj.rect = new Rect(e.x - gObj.size.x/2, e.y - gObj.size.y, gObj.size.x, gObj.size.y);
 
-        if(leftJustify){
+        if(e.leftJustify){
             gObj.rect.x += gObj.rect.width/2;
+        }
+
+        if(e.italic && e.bold) {
+            gObj.style.fontStyle = FontStyle.BoldAndItalic;
+        }
+        else if(e.italic) {
+            gObj.style.fontStyle = FontStyle.Italic;
+        }
+        else if(e.bold) {
+            gObj.style.fontStyle = FontStyle.Bold;
         }
 
         return gObj;
     }
 
-    static void addDropShadow(GUIObject g, Color? dropShadow=null){
+    static void addDropShadow(GUIObject g, int dropShadowOffsetX, int dropShadowOffsetY, Color? dropShadow=null) {
         if(dropShadow != null && g.style.normal.textColor.a != 0){
             Color prevColor = g.style.normal.textColor;
 
@@ -71,19 +111,25 @@ public class EZGUI : MonoBehaviour {
             ds.a = prevColor.a;
             g.style.normal.textColor = ds;
 
-            GUI.Label(new Rect(g.rect.x + 5, g.rect.y + 5, g.rect.width, g.rect.height), g.cnt, g.style);
+            GUI.Label(new Rect(g.rect.x + dropShadowOffsetX, g.rect.y + dropShadowOffsetY, g.rect.width, g.rect.height), g.cnt, g.style);
 
             g.style.normal.textColor = prevColor;
         }
     }
 
-    static bool checkHover(GUIObject g, Color? hoverColor){
+    static bool checkMouse(GUIObject g, Color? hoverColor, Color? activeColor){
         if(hoverColor != null) {
             Vector2 mousePos = GUIUtility.ScreenToGUIPoint(Input.mousePosition);
             mousePos.y = FULLH - mousePos.y;
 
             if(g.rect.Contains(mousePos)){
-                g.style.normal.textColor = (Color)hoverColor;
+                if(activeColor != null && Input.GetMouseButton(0)) {
+                    g.style.normal.textColor = (Color)activeColor;
+                }
+                else {
+                    g.style.normal.textColor = (Color)hoverColor;
+                }
+
                 return true;
             }
         }
@@ -96,37 +142,39 @@ public class EZGUI : MonoBehaviour {
     /// <summary>
     /// Draws str with center at (x, y).
     /// </summary>
-    public static void placeTxt(string str, int fontSize, float x, float y, Color? color=null, Color? dropShadow=null){
-        GUIObject g = getGUIObject(str, fontSize, x, y, color);
-        addDropShadow(g, dropShadow);
+    public static void placeTxt(EZOpt e){
+        GUIObject g = getGUIObject(e);
+        addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
 
         GUI.Label(g.rect, g.cnt, g.style);
     }
 
     /// <summary>
-    /// Draws str with center at (x, y).
+    /// Str will wrap to fit in width.
     /// </summary>
-    public static void wrapTxt(string str, int fontSize, float x, float y, float w, Color? color=null, Color? dropShadow=null) {
-        GUIObject g = getGUIObject(str, fontSize, x, y, color);
-        g.rect.width = w;
-        g.style.wordWrap = true;
+    public static void wrapTxt(EZOpt e) {
+        GUIObject g = getGUIObject(e);
 
-        addDropShadow(g, dropShadow);
+        addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
 
-        GUI.Label(g.rect, g.cnt, g.style);
+        GUIStyle style = GUI.skin.GetStyle("Label");
+        style.fontSize = g.style.fontSize;
+        style.normal.textColor = g.style.normal.textColor;
+
+        GUI.Label(new Rect(e.x, e.y, e.width, FULLH), e.str, style);
     }
 
     /// <summary>
     /// Fades str in and out.
     /// </summary>
-	public static void blinkTxt(string str, int fontSize, float x, float y, Color? color=null, Color? dropShadow=null){
-        GUIObject g = getGUIObject(str, fontSize, x, y, color);
+    public static void blinkTxt(EZOpt e) {
+        GUIObject g = getGUIObject(e);
 
         Color c = g.style.normal.textColor;
         c.a = Mathf.PingPong(Time.time, 1);
         g.style.normal.textColor = c;
 
-        addDropShadow(g, dropShadow);
+        addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
 
         GUI.Label(g.rect, g.cnt, g.style);
     }
@@ -134,11 +182,11 @@ public class EZGUI : MonoBehaviour {
     /// <summary>
     /// Turns str on and off.
     /// </summary>
-	public static void flashTxt(string str, int fontSize, float x, float y, Color? color=null, Color? dropShadow=null){
-		GUIObject g = getGUIObject(str, fontSize, x, y, color);
+    public static void flashTxt(EZOpt e) {
+		GUIObject g = getGUIObject(e);
 		
         if(Time.time % 2 < 1) {
-            addDropShadow(g, dropShadow);
+            addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
 
             GUI.Label(g.rect, g.cnt, g.style);
         }
@@ -147,14 +195,14 @@ public class EZGUI : MonoBehaviour {
     /// <summary>
     /// Scales str's fontSize [0, 9].
     /// </summary>
-	public static void pulseTxt(string str, int fontSize, float x, float y, Color? color=null, Color? dropShadow=null){
+	public static void pulseTxt(EZOpt e){
 		float pp = Mathf.PingPong(Time.time, 0.9f);
 		pp *= 10;
-		fontSize += (int)pp;
+		e.fontSize += (int)pp;
 		
-		GUIObject g = getGUIObject(str, fontSize, x, y, color);
+		GUIObject g = getGUIObject(e);
 
-        addDropShadow(g, dropShadow);
+        addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
 
 		GUI.Label(g.rect, g.cnt, g.style);
 	}
@@ -167,12 +215,12 @@ public class EZGUI : MonoBehaviour {
     /// Draws str with center at (x, y).
     /// </summary>
     /// <returns>True if button was clicked.</returns>
-    public static bool placeBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null, Color? dropShadow=null){
-        GUIObject g = getGUIObject(str, fontSize, x, y, color);
+    public static bool placeBtn(EZOpt e){
+        GUIObject g = getGUIObject(e);
 
-        checkHover(g, hoverColor);
-        addDropShadow(g, dropShadow);
-
+        checkMouse(g, e.hover, e.active);
+        addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
+        
         return GUI.Button(g.rect, g.cnt, g.style);
     }
 
@@ -180,15 +228,15 @@ public class EZGUI : MonoBehaviour {
     /// Fades str in and out.
     /// </summary>
     /// <returns>True if button was clicked.</returns>
-    public static bool blinkBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null, Color? dropShadow=null) {
-        GUIObject g = getGUIObject(str, fontSize, x, y, color);
+    public static bool blinkBtn(EZOpt e) {
+        GUIObject g = getGUIObject(e);
 
         Color c = g.style.normal.textColor;
         c.a = Mathf.PingPong(Time.time, 1);
         g.style.normal.textColor = c;
 
-        checkHover(g, hoverColor);
-        addDropShadow(g, dropShadow);
+        checkMouse(g, e.hover, e.active);
+        addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
 
         return GUI.Button(g.rect, g.cnt, g.style);
     }
@@ -197,15 +245,15 @@ public class EZGUI : MonoBehaviour {
     /// Turns str's alpha value on and off.
     /// </summary>
     /// <returns>True if button was clicked.</returns>
-    public static bool flashBtn(string str, int fontSize, float x, float y, Color? color=null, Color? hoverColor=null, Color? dropShadow=null) {
-        GUIObject g = getGUIObject(str, fontSize, x, y, color);
+    public static bool flashBtn(EZOpt e) {
+        GUIObject g = getGUIObject(e);
 
         Color c = g.style.normal.textColor;
         c.a = (Time.time % 2 < 1) ? 1 : 0;
         g.style.normal.textColor = c;
 
-        checkHover(g, hoverColor);
-        addDropShadow(g, dropShadow);
+        checkMouse(g, e.hover, e.active);
+        addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
 
         return GUI.Button(g.rect, g.cnt, g.style);
     }
@@ -214,31 +262,39 @@ public class EZGUI : MonoBehaviour {
     /// Scales str's fontSize [0, 9].
     /// </summary>
     /// <returns>True if button was clicked.</returns>
-    public static bool pulseBtn(string str, int fontSize, float x, float y, Color color, Color hoverColor, Color? dropShadow=null) {
+    public static bool pulseBtn(EZOpt e) {
 
-        GUIObject g = getGUIObject(str, fontSize, x, y, color);
-        bool isHover = checkHover(g, hoverColor);
+        GUIObject g = getGUIObject(e);
+        bool isHover = checkMouse(g, e.hover, e.active);
 
         if(!isHover){
             float pp = Mathf.PingPong(Time.time, 0.9f);
             pp *= 10;
-            fontSize += (int)pp;
+            e.fontSize += (int)pp;
             
-            g = getGUIObject(str, fontSize, x, y, color);
+            g = getGUIObject(e);
         }
         else {
-            fontSize += 9;  // make text fullsize on hover
+            e.fontSize += 9;  // make text fullsize on hover
 
-            g = getGUIObject(str, fontSize, x, y, color);
-            g.style.normal.textColor = (Color)hoverColor;
+            g = getGUIObject(e);
+
+            if(e.active != null && Input.GetMouseButton(0)) {
+                g.style.normal.textColor = (Color)e.active;
+            }
+            else {
+                g.style.normal.textColor = (Color)e.hover;
+            }
         }
-        
-        addDropShadow(g, dropShadow);
+
+        addDropShadow(g, e.dropShadowX, e.dropShadowY, e.drop);
 
         return GUI.Button(g.rect, g.cnt, g.style);
     }
 
     #endregion GUI.Button
+
+
 }
 
 
