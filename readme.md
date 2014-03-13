@@ -1,7 +1,7 @@
-EZGui
+EZGUI
 =====
 
-EZGui is a class for easily laying out text with Unity's OnGUI() function.  It is well suited for text call-to-actions, and simple notification animations.
+EZGUI is a class for easily laying out text with Unity's OnGUI() function.  It is well suited for text call-to-actions, and simple notification animations.
 
 Live Demo
 ---------
@@ -20,27 +20,39 @@ API
 * FULLH
 * HALFW
 * HALFH
-* leftJustify
-	* Set this to true to left justify text.
-	
+
 * init()
 	* Scales GUI.matrix relative to FULLW and FULLH.
-	* Resets leftJustify to false.
 	* MUST be called at the start of OnGUI().
 
 * GUI.Label methods
-	* placeTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
+	* placeTxt(str, fontSize, x, y, ?ezOpt)
 		* Draws str with center at (x, y).
-	* flashTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
+	* flashTxt(str, fontSize, x, y, ?ezOpt)
 		* Turns str on and off.
-	* blinkTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
+	* blinkTxt(str, fontSize, x, y, ?ezOpt)
 		* Fades str in and out.
-	* pulseTxt(str, fontSize, x, y, ?color, ?dropShadowColor)
+	* pulseTxt(str, fontSize, x, y, ?ezOpt)
 		* Scales str's fontSize [0, 9].
+	* wrapTxt(str, fontSize, x, y, width, ?ezOpt)
+		* Str will wrap to fit in width.  NOTE: text is left justified and top aligned (this includes placement).
 
-* GUI.Button methods
-	* placeBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
-	* flashBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
-	* blinkBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
-	* pulseBtn(str, fontSize, x, y, ?color, ?hoverColor, ?dropShadowColor)
+* GUI.Button methods: returns true on click
+	* placeBtn(str, fontSize, x, y, ?ezOpt)
+	* flashBtn(str, fontSize, x, y, ?ezOpt)
+	* blinkBtn(str, fontSize, x, y, ?ezOpt)
+	* pulseBtn(str, fontSize, x, y, ?ezOpt)
+	
+* GUI.Window methods
+	* placeWindow(str, fontSize, x, y, height, callback, bgColor, ?ezOpt)
 
+* EZOpt: A struct for extending the basic text layout
+	* color
+	* hoverColor
+	* activeColor
+	* dropShadow
+	* bold
+	* italic
+	* leftJustify
+	* dropShadowX
+	* dropShadowY

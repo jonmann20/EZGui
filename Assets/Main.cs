@@ -4,45 +4,76 @@ using System.Collections;
 public class Main : MonoBehaviour {
 
     Color drp, btnActive;
-    void Awake(){
+
+    bool windowOpen = false, windowClosed = true;
+
+    void Awake() {
         drp = new Color(0.1f, 0.1f, 0.1f);
         btnActive = new Color(1, 0.822f, 0.016f);
-        //print(Color.yellow);
     }
 
     void OnGUI(){
         EZGUI.init();
 
-        if(EZGUI.placeBtn(new EZOpt("Back", 45, 85, 85, Color.white, Color.red, Color.black)) || Input.GetKeyDown(KeyCode.Backspace)){
+        if(EZGUI.placeBtn("Back", 45, 85, 85, new EZOpt(Color.white, Color.red, new Color(0.9f, 0, 0), drp)) || Input.GetKeyDown(KeyCode.Backspace)) {
             Application.LoadLevel("title");
         }
 
         int fSize = 43;
         
-        EZOpt titleLabel = new EZOpt("GUI.Label", fSize, 300, 100, Color.green, drp);
-        titleLabel.italic = true;
-        titleLabel.bold = true;
-        EZGUI.placeTxt(titleLabel);
+        //--- Label
+        EZOpt titleOpt = new EZOpt(Color.green, drp);
+        titleOpt.italic = true;
+        titleOpt.bold = true;
+        EZGUI.placeTxt("GUI.Label", fSize, 250, 300, titleOpt);
 
-        EZGUI.placeTxt(new EZOpt("Place Text", fSize, 300, 200, Color.green, drp));
-        EZGUI.flashTxt(new EZOpt("Flash Text", fSize, 300, 300, Color.green, drp));
-        EZGUI.blinkTxt(new EZOpt("Blink Text", fSize, 300, 400, Color.green, drp));
-        EZGUI.pulseTxt(new EZOpt("Pulse Text", fSize, 300, 500, Color.green, drp));
+        EZOpt lblOpt = new EZOpt(Color.green, drp);
+        EZGUI.placeTxt("Place Text", fSize, 250, 400, lblOpt);
+        EZGUI.flashTxt("Flash Text", fSize, 250, 500, lblOpt);
+        EZGUI.blinkTxt("Blink Text", fSize, 250, 600, lblOpt);
+        EZGUI.pulseTxt("Pulse Text", fSize, 250, 700, lblOpt);
 
-        titleLabel.str = "GUI.Button";
-        titleLabel.x = 700;
-        titleLabel.color = Color.red;
-        EZGUI.placeTxt(titleLabel);
+        //--- Button
+        titleOpt.color = Color.red;
+        EZGUI.placeTxt("GUI.Button", fSize, 650, 300, titleOpt);
 
-        EZGUI.placeBtn(new EZOpt("Place Button", fSize, 700, 200, Color.red, Color.yellow, btnActive, drp));
-        EZGUI.flashBtn(new EZOpt("Flash Button", fSize, 700, 300, Color.red, Color.yellow, btnActive, drp));
-        EZGUI.blinkBtn(new EZOpt("Blink Button", fSize, 700, 400, Color.red, Color.yellow, btnActive, drp));
-        EZGUI.pulseBtn(new EZOpt("Pulse Button", fSize, 700, 500, Color.red, Color.yellow, btnActive, drp));
+        EZOpt btnOpt = new EZOpt(Color.red, Color.yellow, btnActive, drp);
+        EZGUI.placeBtn("Place Button", fSize, 650, 400, btnOpt);
+        EZGUI.flashBtn("Flash Button", fSize, 650, 500, btnOpt);
+        EZGUI.blinkBtn("Blink Button", fSize, 650, 600, btnOpt);
+        EZGUI.pulseBtn("Pulse Button", fSize, 650, 700, btnOpt);
 
+        //--- Wrap
+        titleOpt.leftJustify = true;
+        titleOpt.color = new Color(0.8f, 0.8f, 0.8f);
+        EZGUI.placeTxt("wrapTxt()", fSize, 920, 300, titleOpt);
 
-        EZOpt e = new EZOpt("By specifying a width and calling wrapTxt(), the text will wrap automatically when over a certain width.  Allowing text to fall to the next line automatically.", 45, 1300, 100);
-        e.width = 400;
-        EZGUI.wrapTxt(e);
+        EZGUI.wrapTxt("By specifying a width, the text will wrap automatically when over a certain width.  NOTE: text is left justified and top aligned.", 
+            fSize, 
+            920, 
+            350, 
+            400,
+            new EZOpt((Color)titleOpt.color, drp)
+        );
 
+        //--- Window
+        EZGUI.placeTxt("GUI.Window", fSize, 1600, 300, new EZOpt(Color.cyan, drp));
+
+        if(windowClosed) {
+            windowOpen = EZGUI.placeBtn("Open Window", fSize, 1600, 500, new EZOpt(Color.cyan, new Color(0, 0.9f, 0.9f), new Color(0, 0.8f, 0.8f), drp));
+        }
+
+        if(windowOpen) {
+            windowClosed = EZGUI.placeWindow("Player Info", 30, 1450, 375, 300, windowCallback, Color.black, new EZOpt(Color.cyan));
+        }
+    }
+
+    void windowCallback(int windowID) {
+        EZOpt e = new EZOpt();
+        e.leftJustify = true;
+
+        EZGUI.placeTxt("Username: freeCode", 28, 20, 100, e);
+        EZGUI.placeTxt("# Kills: 100", 28, 20, 140, e);
+        EZGUI.placeTxt("Perk: Invisibility", 28, 20, 180, e);
     }
 }
