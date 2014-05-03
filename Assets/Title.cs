@@ -32,15 +32,15 @@ public class Title : MonoBehaviour {
     void select(){
         EZOpt opt = new EZOpt(Color.white, Color.green, new Color(0,0.9f, 0), drp);
 
-        if(EZGUI.placeBtn("Campaign", 55, EZGUI.HALFW, EZGUI.HALFH - 100, opt)) {
+        if(EZGUI.placeBtn("Campaign", 55, EZGUI.HALFW, EZGUI.HALFH - 100, opt).btn) {
             Application.LoadLevel("main");
         }
 
-        if(EZGUI.placeBtn("Instructions", 55, EZGUI.HALFW, EZGUI.HALFH, opt)) {
+        if(EZGUI.placeBtn("Instructions", 55, EZGUI.HALFW, EZGUI.HALFH, opt).btn) {
             state = instructions;
         }
 
-        if(EZGUI.placeBtn("Back", 55, EZGUI.HALFW, EZGUI.HALFH + 100, new EZOpt(Color.white, Color.red, new Color(0.9f, 0, 0), drp)) || Input.GetKeyDown(KeyCode.Backspace)) {
+        if(EZGUI.placeBtn("Back", 55, EZGUI.HALFW, EZGUI.HALFH + 100, new EZOpt(Color.white, Color.red, new Color(0.9f, 0, 0), drp)).btn || Input.GetKeyDown(KeyCode.Backspace)) {
             state = start;
         }
     }

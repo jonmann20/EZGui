@@ -15,7 +15,7 @@ public class Main : MonoBehaviour {
     void OnGUI(){
         EZGUI.init();
 
-        if(EZGUI.placeBtn("Back", 45, 85, 85, new EZOpt(Color.white, Color.red, new Color(0.9f, 0, 0), drp)) || Input.GetKeyDown(KeyCode.Backspace)) {
+        if(EZGUI.placeBtn("Back", 45, 85, 85, new EZOpt(Color.white, Color.red, new Color(0.9f, 0, 0), drp)).btn || Input.GetKeyDown(KeyCode.Backspace)) {
             Application.LoadLevel("title");
         }
 
@@ -59,8 +59,8 @@ public class Main : MonoBehaviour {
         //--- Window
         EZGUI.placeTxt("GUI.Window", fSize, 1600, 300, new EZOpt(Color.cyan, drp));
 
-        if(windowClosed) {
-            windowOpen = EZGUI.placeBtn("Open Window", fSize, 1600, 500, new EZOpt(Color.cyan, new Color(0, 0.9f, 0.9f), new Color(0, 0.8f, 0.8f), drp));
+        if(windowClosed){
+			windowOpen = EZGUI.placeBtn("Open Window", fSize, 1600, 500, new EZOpt(Color.cyan, new Color(0, 0.9f, 0.9f), new Color(0, 0.8f, 0.8f), drp)).btn;
         }
 
         if(windowOpen) {
